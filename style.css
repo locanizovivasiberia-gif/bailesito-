@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: "Comic Sans MS", cursive;
+  cursor: none; /* Oculta cursor normal */
+  background: #000; /* Fondo negro de inicio */
+  height: 100vh;
+  width: 100vw;
+  touch-action: none; /* Evita zoom/scroll en móviles */
+}
+<a href="https://marketplace.visualstudio.com/items?itemName=publishername.extensionname">
+  <img src="https://vsmarketplacebadges.dev/badge_title/publishername.extensionname.svg" alt="badge_title">
+</a>

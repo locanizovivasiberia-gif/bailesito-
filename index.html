@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animación Especial</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive;
+      cursor: none;
+      background: #000;
+      height: 100vh;
+      width: 100vw;
+      touch-action: none;
+    }
+
+    #background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #finalStaticImage,
+    #endVideoImage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: all 1s ease-in-out;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    #finalText {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff1e56;
+      text-shadow: 2px 2px 12px rgba(255, 0, 50, 0.7);
+      opacity: 0;
+      z-index: 20;
+      white-space: nowrap;
+    }
+
+    .sparkle,
+    .emoji,
+    .rain-heart-element,
+    .rose {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      transform-origin: center center;
+    }
+
+    .sparkle {
+      width: 25px;
+      height: 25px;
+      background: url('https://i.imgur.com/2Y8QaIW.png');
+      background-size: contain;
+      z-index: 12;
+    }
+
+    .emoji {
+      font-size: 2.8em;
+      z-index: 13;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .rain-heart-element {
+      font-size: 3.2em;
+      opacity: 0;
+      color: #ff69b4;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      z-index: 11;
+    }
+
+    .rose {
+      font-size: 3em;
+      color: red;
+      z-index: 15;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      animation: fall 5s linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(800px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <video id="background-video" playsinline controls>
+    <source src="https://i.imgur.com/d9f3MyX.mp4" type="video/mp4">
+  </video>
+
+  <div id="finalText">DIEGO M: PARA : MITSUAKY 💖💞💗</div>
+  <img id="finalStaticImage" src="https://drive.usercontent.google.com/download?id=1LFeWjiuwPxdaO6NUdEXtE_I5LajjaMtf&export=download&authuser=0" alt="Imagen inicial">
+  <img id="endVideoImage" src="https://i.imgur.com/mpuM76W.png" alt="Imagen final del video">
+
+  <script>
+    const finalText = document.getElementById('finalText');
+    const finalStaticImage = document.getElementById('finalStaticImage');
+    const backgroundVideo = document.getElementById('background-video');
+    const endVideoImage = document.getElementById('endVideoImage');
+    const emojiList = ['❤️‍🔥', '💔', '💞', '💗', '💝', '💖', '💘', '💋', '🤩', '🥰', '😍', '🫣', '🌹'];
+    const roseColors = ['🌹', '🌺', '💐', '🥀', '🌷', '🌸'];
+
+    function createSparkle(x, y) {
+      const s = document.createElement('div');
+      s.classList.add('sparkle');
+      s.style.left = x + 'px';
+      s.style.top = y + 'px';
+      document.body.appendChild(s);
+      s.animate([{
+        transform: 'translateY(0) scale(1)',
+        opacity: 1
+      }, {
+        transform: `translateY(${Math.random()*-100}px) translateX(${Math.random()*100-50}px) scale(0.5) rotate(${Math.random()*360}deg)`,
+        opacity: 0
+      }], {
+        duration: 800,
+        fill: 'forwards'
+      });
+      setTimeout(() => s.remove(), 800);
+    }
+
+    function createEmoji(x, y) {
+      const e = document.createElement('div');
+      e.classList.add('emoji');
+      e.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
+      e.style.left = x + 'px';
+      e.style.top = y + 'px';
+      document.body.appendChild(e);
+      e.animate([{
+          transform: 'translate(-50%, -50%) scale(0) rotate(0deg)',
+          opacity: 0
+        },
+        {
+          transform: 'translate(-50%, -50%) scale(1.2) rotate(360deg)',
+          opacity: 1,
+          offset: 0.3
+        },
+        {
+          transform: `translate(${(Math.random()-0.5)*50}px,-150px) scale(0.5) rotate(${Math.random()*720-360}deg)`,
+          opacity: 0
+        }
+      ], {
+        duration: 600 + Math.random() * 200,
+        easing: 'ease-out',
+        fill: 'forwards'
+      }).onfinish = () => e.remove();
+    }
+    // Lluvia rápida de emojis
+    function startEmojiRain(duration = 5000) {
+      const interval = setInterval(() => {
+        for (let i = 0; i < 20; i++) {
+          const x = Math.random() * window.innerWidth;
+          const e = document.createElement('div');
+          e.classList.add('rain-heart-element');
+          e.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
+          e.style.left = x + 'px';
+          e.style.top = '-50px';
+          const dur = Math.random() * 0.8 + 0.5;
+          e.style.animation = `fall ${dur}s linear forwards`;
+          document.body.appendChild(e);
+          setTimeout(() => e.remove(), dur * 1000);
+        }
+      }, 50);
+      setTimeout(() => clearInterval(interval), duration);
+    }
+    // Animación de entrega de rosas
+    function startRosesAnimation(duration = 5000) {
+      const interval = setInterval(() => {
+        const rose = document.createElement('div');
+        rose.classList.add('rose');
+        rose.textContent = roseColors[Math.floor(Math.random() * roseColors.length)];
+        rose.style.left = Math.random() * window.innerWidth + 'px';
+        rose.style.top = '-50px';
+        const dur = Math.random() * 2 + 3;
+        rose.style.animation = `fall ${dur}s linear forwards`;
+        document.body.appendChild(rose);
+        setTimeout(() => rose.remove(), dur * 1000);
+      }, 300);
+      setTimeout(() => clearInterval(interval), duration);
+    }
+    // Secuencia principal
+    function startSequence() {
+      finalText.style.opacity = 1;
+      finalStaticImage.style.opacity = 1;
+      setTimeout(() => {
+        finalText.style.opacity = 0;
+        finalStaticImage.style.opacity = 0;
+        startEmojiRain(5000); // lluvia de emojis
+        // Video
+        backgroundVideo.style.opacity = 1;
+        backgroundVideo.loop = false;
+        backgroundVideo.currentTime = 0;
+
+        function playVideoWithSound() {
+          backgroundVideo.play().catch(err => console.warn(err));
+          document.removeEventListener('click', playVideoWithSound);
+          document.removeEventListener('touchstart', playVideoWithSound);
+        }
+        document.addEventListener('click', playVideoWithSound);
+        document.addEventListener('touchstart', playVideoWithSound);
+        backgroundVideo.onended = () => {
+          endVideoImage.style.opacity = 1;
+          // Animación de rosas después del video
+          startRosesAnimation(8000);
+        }
+      }, 5000);
+    }
+    // Cursor interactivo
+    function handleMove(x, y) {
+      createSparkle(x + Math.random() * 20 - 10, y + Math.random() * 20 - 10);
+      createEmoji(x, y);
+    }
+    document.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+    document.addEventListener('mousedown', e => handleMove(e.clientX, e.clientY));
+    document.addEventListener('touchmove', e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
+    window.onload = startSequence;
+  </script>
+</body>
+
+</html>
